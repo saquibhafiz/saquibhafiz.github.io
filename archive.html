@@ -86,9 +86,9 @@
     <div class="row">
         <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             <div class="site-heading">
-                <h1>Saquib Hafiz</h1>
+                <h1>Archive</h1>
                 <hr class="small">
-                <span class="subheading">my opinion, my code, my life</span>
+                <span class="subheading">all my posts</span>
             </div>
         </div>
     </div>
@@ -99,33 +99,25 @@
 <div class="container" id="container">
 <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-        <div id="post-previews"></div>
-
         <script id="post-preview-template" type="text/x-handlebars-template">
-            <div class="post-preview">
-                <a href="blog/{{ entry }}">
-                    <h2 class="post-title">
-                        {{ title }}
-                    </h2>
-                    <h3 class="post-subtitle">
-                        {{ subtitle }}
-                    </h3>
-                </a>
-                <p class="post-meta">Posted on {{ date }}</p>
-            </div>
-            <hr>
+            <tr onclick="document.location = 'blog/{{ entry }}';">
+                <td>{{ title }}</td>
+                <td>{{ date }}</td>
+            </tr>
         </script>
 
-        <!-- Pager -->
-        <ul class="pager">
-            <li id="newer">
-                <a href="#container">&larr; Newer Posts</a>
-            </li>
-            <li id="older">
-                <a href="#container">Older Posts &rarr;</a>
-            </li>
-        </ul>
+        <table id="blog-table" class="table table-hover">
+        <thead>
+            <tr>
+                <th>Post</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody id="post-previews">
+        </tbody>
+        </table>
     </div>
+</div>
 </div>
 
     <hr>
