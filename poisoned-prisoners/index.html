@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title> Poisoned Prisoners — How I broke down one problem into another &raquo;  Saquib Hafiz</title>
+<meta name="description" content="Saquib Hafiz - code 'n stuff
+">
+<meta name="keywords" content="">
+<link rel="canonical" href="saquibhafiz.github.io/poisoned-prisoners/">
+        
+
+
+
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Poisoned Prisoners" />
+<meta name="twitter:description" content="Saquib Hafiz - code 'n stuff
+" />
+<meta name="twitter:image" content="saquibhafiz.github.io" />
+
+<!-- Google plus -->
+<meta name="author" content="https://plus.google.com/+SaquibHafiz">
+<link rel="author" href="https://plus.google.com/+SaquibHafiz">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Poisoned Prisoners">
+<meta property="og:description" content="Saquib Hafiz - code 'n stuff
+">
+<meta property="og:url" content="saquibhafiz.github.io/poisoned-prisoners/">
+<meta property="og:site_name" content="Saquib Hafiz">
+
+        <link href='http://fonts.googleapis.com/css?family=Inconsolata:400,700' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="/assets/vendor/normalize-css/normalize.css">
+<link rel="stylesheet" href="/css/main.css">
+
+  <link rel="stylesheet" href="/assets/vendor/highlight/styles/grayscale.css">
+
+<link rel="stylesheet" href="/assets/vendor/font-awesome/css/font-awesome.css">
+    </head>
+
+    <body>
+        <div class="wrapper">
+            <header class="header">
+    <div class="navigation">
+        <a href="/" class="logo">Saquib Hafiz</a>
+
+        <ul class="menu">
+            <li class="menu__entry"><a href="/about">About</a></li>
+            <li class="menu__entry"><a href="/">Blog</a></li>
+        </ul>
+    </div>
+
+    <ul class="social-links">
+        
+            <a href="https://github.com/saquibhafiz" class="social-links__entry" target="_blank">
+                <i class="fa fa-github"></i>
+            </a>
+        
+
+        
+            <a href="https://twitter.com/saquibhafizz" class="social-links__entry" target="_blank">
+                <i class="fa fa-twitter"></i>
+            </a>
+        
+    </ul>
+</header>
+
+            <h1 class="page-title post-title">
+    <div class="page-title__text post-title__text">Poisoned Prisoners</div>
+    <div class="page-title__subtitle post-title__subtitle">How I broke down one problem into another</div>
+</h1>
+
+<div class="content">
+    <h2 id="challenge">Challenge:</h2>
+
+<p>A king receives 1000 bottles of wine, 1 of which he knows to be poisoned. He does not know which bottle is poisoned so he will use ten prisoners to test the wine. The king wants this task done quickly so he can start drinking his wine as soon as possible so he hires you to find the fastest way to solve this wasting as little wine as possible. The prisoners are only allowed have wine once a day. Even the smallest amount of the poisoned wine is enough to poison and kill a prisoner.</p>
+
+<h2 id="solution">Solution:</h2>
+
+<p>For this lets assume that when a prisoner drinks wine he has a insignificantly small amount.</p>
+
+<p>In this case most people start by making each prisoner try 100 wine each. The naive path to take here is having each prisoner drink it one at a time taking (at worst) 100 days to find the poisoned wine. This is not bad however what if we mix 100 of the samples into one drink.</p>
+
+<p>Now each prisoner tries 100 wine samples at once so when a prisoner gets poisoned we know which 100 bottles hold the poisoned bottle. We can redo this with 100 bottles and 9 prisoners each trying 11 and one trying 12. We can redo this again once we find the 12 possible poisoned bottles and have 8 prisoners 1 or 2 each. We may find the one here or we may have to go another day. This method takes at worst 4 days and at best 3. This is a lot better than our previous 100 day result.</p>
+
+<p>However we can mix the wines is a smarter way. Firstly lets number each bottle from 1 to 1000. Each of these numbers have a binary representation that can be written in 10 digits. Lets number the prisoners from 1 to 10. Now we serve the wine to the nth prisoner if the nth digit in the binary representation is 1. As previously done we mix the sample together so each prisoner can drink it in one day. Now a set of prisoners will die and we can use their number to recreate the number. Example if the prisoners 3, 5, 6, 9 die then we get 308. This means that wine number 308 is poisoned. We can do this because each number has a unique binary representation which has a bijection to the set of poisoned prisoners. Thus knowing the set we can use the bijection to figure out the bottle number accurately in 1 day.</p>
+
+</div>
+
+<div class="about">
+    <div class="about__devider">*****</div>
+    <div class="about__text">
+        Written by <strong>  Saquib Hafiz </strong>
+        on <strong>29 March 2014</strong>
+    </div>
+</div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = 'saquibhafiz';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+        </div>
+
+        <script src="/assets/vendor/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+        
+    </body>
+</html>

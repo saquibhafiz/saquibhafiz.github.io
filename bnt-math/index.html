@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title> Base Negative Two (BNT): Part 2 - Basic Math — Basic math with BNT and generic neagative base systems &raquo;  Saquib Hafiz</title>
+<meta name="description" content="Saquib Hafiz - code 'n stuff
+">
+<meta name="keywords" content="">
+<link rel="canonical" href="saquibhafiz.github.io/bnt-math/">
+        
+
+
+
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Base Negative Two (BNT): Part 2 - Basic Math" />
+<meta name="twitter:description" content="Saquib Hafiz - code 'n stuff
+" />
+<meta name="twitter:image" content="saquibhafiz.github.io" />
+
+<!-- Google plus -->
+<meta name="author" content="https://plus.google.com/+SaquibHafiz">
+<link rel="author" href="https://plus.google.com/+SaquibHafiz">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Base Negative Two (BNT): Part 2 - Basic Math">
+<meta property="og:description" content="Saquib Hafiz - code 'n stuff
+">
+<meta property="og:url" content="saquibhafiz.github.io/bnt-math/">
+<meta property="og:site_name" content="Saquib Hafiz">
+
+        <link href='http://fonts.googleapis.com/css?family=Inconsolata:400,700' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="/assets/vendor/normalize-css/normalize.css">
+<link rel="stylesheet" href="/css/main.css">
+
+  <link rel="stylesheet" href="/assets/vendor/highlight/styles/grayscale.css">
+
+<link rel="stylesheet" href="/assets/vendor/font-awesome/css/font-awesome.css">
+    </head>
+
+    <body>
+        <div class="wrapper">
+            <header class="header">
+    <div class="navigation">
+        <a href="/" class="logo">Saquib Hafiz</a>
+
+        <ul class="menu">
+            <li class="menu__entry"><a href="/about">About</a></li>
+            <li class="menu__entry"><a href="/">Blog</a></li>
+        </ul>
+    </div>
+
+    <ul class="social-links">
+        
+            <a href="https://github.com/saquibhafiz" class="social-links__entry" target="_blank">
+                <i class="fa fa-github"></i>
+            </a>
+        
+
+        
+            <a href="https://twitter.com/saquibhafizz" class="social-links__entry" target="_blank">
+                <i class="fa fa-twitter"></i>
+            </a>
+        
+    </ul>
+</header>
+
+            <h1 class="page-title post-title">
+    <div class="page-title__text post-title__text">Base Negative Two (BNT): Part 2 - Basic Math</div>
+    <div class="page-title__subtitle post-title__subtitle">Basic math with BNT and generic neagative base systems</div>
+</h1>
+
+<div class="content">
+    <p>Previously we discussed the negative number systems and the potential they contain. My goal is to explore this field and see how far I can go by expanding the possibilites of this basis. However to go any further we must first go over the basics, adding, subtracting, multiplying, dividing, negation, etc. Basically we need to learn how to perform arithmetic natively in this number system. This entry we will talk about the easiest ones, negation, addition and subtraction.</p>
+
+<h2 id="neegation">Neegation:</h2>
+
+<p>Negation is a fun case when it comes to negative bases. Unlike the our natural number systems, the negation is implicit in the actual numbers rather then explicitly as a symbol ( - ) or digit. So how do we negate a number in this number system? After some pondering I decided to use a very simple and useful approach.</p>
+
+<p>We know that <code class="highlighter-rouge">−2x + x = −x</code>. This seems simple and useless and first until you realize that -2 is the same as a left shift, a simple operation that multiples the number by the base. Now all we have left to do is add the two numbers. However instead of using the usual add function (mostly because I hadn’t written it yet) I decided to figure how to do it in the same function. There are 4 possible casses: <code class="highlighter-rouge">0 + 0 = 0</code>, <code class="highlighter-rouge">1 + 0 = 1</code>, <code class="highlighter-rouge">0 + 1 = 1</code> and <code class="highlighter-rouge">1 + 1 = tricky</code>. Why is <code class="highlighter-rouge">1+1</code> tricky; because <code class="highlighter-rouge">−2^n + −2^n = −2^(n+2) + −2^(n+1)</code>, with respect to the nth digit.</p>
+
+<p>We would have to implement this anyways for the addition function but I discovered an interesting observation. We know that if that x at n is 1 then -2x at n+1 is 1 as well since they are the same bit (a bit shift left by 1 essentially). This is useful because <code class="highlighter-rouge">2^(n+2) + −2^(n+1) = −(−2^(n+1)) which means that essential we can add -1 to the n+1 digit which we know is 1, thus automatically turning it to a 0. Using this cheat we construct the following function which turns a number negative in </code>O(n)` time where n is the number of digits in the answer.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// based on the fact that -2x + x = -x</span>
+<span class="kd">function</span> <span class="nx">negateBNT</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">[],</span> <span class="nx">carry</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="nx">n</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// the digit is the sum of the bottom digit</span>
+        <span class="c1">// plus the top digit plus the carry</span>
+        <span class="kd">var</span> <span class="nx">digit</span> <span class="o">=</span> <span class="p">(</span><span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">n</span><span class="p">.</span><span class="nx">length</span> <span class="p">?</span> <span class="nx">n</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> 
+                    <span class="p">(</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="p">?</span> <span class="nx">n</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nx">carry</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nx">digit</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">carry</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="nx">digit</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">carry</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">digit</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">removeTrailingZeroes</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// just removes trailing zeroes that I was getting</span>
+<span class="c1">// useful for other future functions</span>
+<span class="kd">function</span> <span class="nx">removeTrailingZeroes</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">while</span> <span class="p">(</span><span class="nx">n</span><span class="p">[</span><span class="nx">n</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">n</span><span class="p">.</span><span class="nx">pop</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">n</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<h2 id="addition">Addition:</h2>
+
+<p>We can reuse most of the code from negation in addition since we essentially add in it. But now we have to consider the case when we perform <code class="highlighter-rouge">1 + 1</code> at bit n but we dont have a 1 in either number at digit n+1n+1. We find that then <code class="highlighter-rouge">1 + 1 = 110</code> which allows us to add those to the carry value naturally. By acting on this special case where we check for a 1 in the n+1n+1 digit allows us to make sure the carry digit never goes above 1 so the highest single addition operation we have to worry about is <code class="highlighter-rouge">1 + 1 + 1 = 111</code> which we deal the same we deal with the previous case.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">addBNTs</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">carry</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">[];</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="nx">b</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">sum</span> <span class="o">=</span> <span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="nx">i</span> <span class="p">?</span> <span class="nx">a</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> 
+                <span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="nx">i</span> <span class="p">?</span> <span class="nx">b</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> 
+                <span class="nx">carry</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+
+        <span class="kd">var</span> <span class="nx">digit</span> <span class="o">=</span> <span class="nx">sum</span> <span class="o">%</span> <span class="mi">2</span><span class="p">;</span>
+
+        <span class="nx">result</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">digit</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nx">sum</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">((</span><span class="nx">a</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="nx">i</span><span class="o">+</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">a</span><span class="p">[</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">||</span>
+                <span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="nx">i</span><span class="o">+</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">b</span><span class="p">[</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">))</span> <span class="p">{</span>
+                <span class="nx">carry</span><span class="p">[</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">carry</span><span class="p">[</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+                <span class="nx">carry</span><span class="p">[</span><span class="nx">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">carry</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">carry</span><span class="p">[</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">removeTrailingZeroes</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<h2 id="subtraction">Subtraction:</h2>
+
+<p>Instead of having subtraction be addition of negation I decided to write the function by hand. This one is actually easier because unlike the usual subtraction process there is no carrying of digits. Instead I still add carries similar to the process in addition and negation. The only special case is <code class="highlighter-rouge">0 - 1</code> because every other case is intuitive. Previously we have discused how <code class="highlighter-rouge">−1 = 11</code> thus <code class="highlighter-rouge">0 − 1 = −1 = 11</code>. So we make the current digit 1 and add 1 to the carry.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">subBNTs</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">carry</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">[];</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="nx">b</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">diff</span> <span class="o">=</span> <span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="nx">i</span> <span class="p">?</span> <span class="nx">a</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> 
+                <span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="nx">i</span> <span class="p">?</span> <span class="nx">b</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> 
+                <span class="nx">carry</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="nx">diff</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">carry</span><span class="p">[</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="nx">diff</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">carry</span><span class="p">[</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nx">result</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">diff</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">removeTrailingZeroes</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>And so conclude the BNT journey … for now.</p>
+
+
+</div>
+
+<div class="about">
+    <div class="about__devider">*****</div>
+    <div class="about__text">
+        Written by <strong>  Saquib Hafiz </strong>
+        on <strong>07 December 2014</strong>
+    </div>
+</div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = 'saquibhafiz';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+        </div>
+
+        <script src="/assets/vendor/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+        
+    </body>
+</html>
