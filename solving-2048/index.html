@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title> Solving 2048 — A first step in the journey of exploring AI &raquo;  Saquib Hafiz</title>
+<meta name="description" content="Saquib Hafiz - code 'n stuff
+">
+<meta name="keywords" content="">
+<link rel="canonical" href="saquibhafiz.github.io/solving-2048/">
+        
+
+
+
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Solving 2048" />
+<meta name="twitter:description" content="Saquib Hafiz - code 'n stuff
+" />
+<meta name="twitter:image" content="saquibhafiz.github.io" />
+
+<!-- Google plus -->
+<meta name="author" content="https://plus.google.com/+SaquibHafiz">
+<link rel="author" href="https://plus.google.com/+SaquibHafiz">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Solving 2048">
+<meta property="og:description" content="Saquib Hafiz - code 'n stuff
+">
+<meta property="og:url" content="saquibhafiz.github.io/solving-2048/">
+<meta property="og:site_name" content="Saquib Hafiz">
+
+        <link href='http://fonts.googleapis.com/css?family=Inconsolata:400,700' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="/assets/vendor/normalize-css/normalize.css">
+<link rel="stylesheet" href="/css/main.css">
+
+  <link rel="stylesheet" href="/assets/vendor/highlight/styles/grayscale.css">
+
+<link rel="stylesheet" href="/assets/vendor/font-awesome/css/font-awesome.css">
+    </head>
+
+    <body>
+        <div class="wrapper">
+            <header class="header">
+    <div class="navigation">
+        <a href="/" class="logo">Saquib Hafiz</a>
+
+        <ul class="menu">
+            <li class="menu__entry"><a href="/about">About</a></li>
+            <li class="menu__entry"><a href="/">Blog</a></li>
+        </ul>
+    </div>
+
+    <ul class="social-links">
+        
+            <a href="https://github.com/saquibhafiz" class="social-links__entry" target="_blank">
+                <i class="fa fa-github"></i>
+            </a>
+        
+
+        
+            <a href="https://twitter.com/saquibhafizz" class="social-links__entry" target="_blank">
+                <i class="fa fa-twitter"></i>
+            </a>
+        
+    </ul>
+</header>
+
+            <h1 class="page-title post-title">
+    <div class="page-title__text post-title__text">Solving 2048</div>
+    <div class="page-title__subtitle post-title__subtitle">A first step in the journey of exploring AI</div>
+</h1>
+
+<div class="content">
+    <p><a href="https://gabrielecirulli.github.io/2048/">2048</a> is a simple video game that went viral around 2 or so years ago. The concept is very simple, given a 4x4 board you move the pieces within it either up, down, left or right whereby joining pieces that have the same value causing them to grow (doubling the value). Every time you make a move, a random piece, either a <code class="highlighter-rouge">2</code> (with a 90% probability) or a <code class="highlighter-rouge">4</code> (with a 10% probability), is added to a random loction. The goal is simple, reach 2048.</p>
+
+<p>Anyone who has tackled the game before knows there is an ideal method to approach it. What we need is a way to score a board (not the score ssytem provided by the game, this score is more of a health function used to determine how good the board is currently). So I created 3 simple guideliens for determining the score:
+* number of empty cells (since the game ends once there are no more random pieces can be inserted)
+* whether cells fo equal value are beside each other
+* a gradient in the board (further detals below)</p>
+
+<p>The gradient is the most important characteristic in a 2048 board. Even a novice player will notice that having the pieces lined up such that the largest number is in the corner and neighbouring pieces decreasing in value sperading out from that piece is the ideal distribution of any board. This is because it allows pieces to be merged instantaniously as they grow (combine to become a larger value).</p>
+
+<p><img src="/assets/img/2048_gradient.png" alt="&quot;2048 gradient&quot;" title="2048 gradient" /></p>
+
+<p>Now we have characteristics whereby we can judge a board and determine how good it is relative to other boards. Next we have to create an AI that sees into the future. Simple enough, we can just start off with a simple minimax tree. A <a href="https://en.wikipedia.org/wiki/Minimax">minimax tree</a> is the abstract data structure used for zero-sum decision based games consisting of 2 agents/players. Given a starting board we can look into the future by going through every move we can make and then further growing the board with every random possible piece. There are 4 such possible user moves and 15 such possible random placements (at most) and two types of pieces that can be put (2 or 4). This means after a single lookahead we have <code class="highlighter-rouge">4 * 15 * 2 = 120</code> possibilities. If we go a level deeper we have <code class="highlighter-rouge">(4 * 15 * 2)^2  = 120^2 = 14400 possibilities</code>. Knowing the ‘future’ we can make a move which will result in the best score in the future.</p>
+
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Minimax.svg" alt="&quot;minimax tree&quot;" title="minimax tree" /></p>
+
+<h4 id="by-nuno-nogueira-nmnogueira---httpenwikipediaorgwikiimageminimaxsvghttpenwikipediaorgwikiimageminimaxsvg-created-in-inkscape-by-author-cc-by-sa-25httpcreativecommonsorglicensesby-sa25-creative-commons-attribution-share-alike-25-httpscommonswikimediaorgwindexphpcurid2276653httpscommonswikimediaorgwindexphpcurid2276653">By Nuno Nogueira (Nmnogueira) - <a href="http://en.wikipedia.org/wiki/Image:Minimax.svg">http://en.wikipedia.org/wiki/Image:Minimax.svg</a>, created in Inkscape by author, <a href="http://creativecommons.org/licenses/by-sa/2.5" title="Creative Commons Attribution-Share Alike 2.5">CC BY-SA 2.5</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=2276653">https://commons.wikimedia.org/w/index.php?curid=2276653</a></h4>
+
+<p>Notice that this grows exponentially because of the tree structure. This is however the worst case possibility, on average as you progress you are more likely to have just 3 moves with 10 random possbilities which results in 60^n possibilities (where n is the depth of the tree). The size of tree we would like really depends on how much our computer can handle. The greater the number of possibilities the greater the runtime because the more you have to explore.</p>
+
+<p>There is a way to make minimax tree more efficient by using a method known as <a href="https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning">alpa-beta pruning</a>. A minimax tree generally works as follows, you the user choose the move with the best possible score, and the opponent chooses the the one with the worst possible score, and this continues as you ascend a tree. This way you know you are always choosing the move with the best outcome given that the opponents goal is to choose the worst possible outcome. Alpha-beta pruning takes advantage of that and stops exploring possibilities which you would not choose because you know there is no way for the best score to be there, and similarly the opponent would not choose because it would lead to a higher score. This mean parts of the possible future go unexplored.</p>
+
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/9/91/AB_pruning.svg" alt="&quot;alpha-beta-pruning&quot;" title="alpha-beta-pruning" /></p>
+
+<h4 id="by-jez9999enwikipediaorgwikiuserjez9999-at-the-english-language-wikipediaenwikipediaorgwiki-cc-by-sa-30httpcreativecommonsorglicensesby-sa30-creative-commons-attribution-share-alike-30-httpscommonswikimediaorgwindexphpcurid3708424httpscommonswikimediaorgwindexphpcurid3708424">By <a href="//en.wikipedia.org/wiki/User:Jez9999">Jez9999</a> at the <a href="//en.wikipedia.org/wiki/">English language Wikipedia</a>, <a href="http://creativecommons.org/licenses/by-sa/3.0" title="Creative Commons Attribution-Share Alike 3.0">CC BY-SA 3.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=3708424">https://commons.wikimedia.org/w/index.php?curid=3708424</a></h4>
+
+<p>Alpha-beta pruning is powerful given that the opponent chooses the move that give yout he worst possible score. It even works if the move the opponent/game makes is random because it will account for the worst case scenario. So why not use that? When parts of the tree go unexplored we risk going down the an option that is unexplored and we would have to regrow the tree as if it was new. But this isn’t a bad start. We know that realistically we don’t want to go through every option because that would be a waste. We want something that on average does amazing and well enough in the worst case scenarios.</p>
+
+<p>We know that possibilities of each random move so the score of a current node is the sum of <code class="highlighter-rouge">probability(random_child) * score(random_child)</code>. This means that we calculate the score of all the children and then multiply it by its likelihood to get a better understanding of how likely a score is. Statistically I am calcualting the expected value. This is similar to what we find in an <a href="https://en.wikipedia.org/wiki/Expectiminimax_tree">expectiminimax tree</a>. Except in our case there is no longer a min node.</p>
+
+<p>This is good because now we take into account expected value which on average will allow us to reach a better result. However we are back to going through every single possibility again. We can only go down 3 levels before it becomes too slow to process. But what if we didn’t process nodes depending on their depth but on their likelihood?</p>
+
+<p>We know that every time we make a move that has a probability of 1, <code class="highlighter-rouge">P(human_choice_node) = 1</code> and that the probability of a random node is <code class="highlighter-rouge">P(random_node) = 1/(2*number_of_emtpy_spaces)</code>. This way we know the likelihood of a node occuring given the current root. Now we just set a threshold for this probability above which we will explore and below which we will determine the local score. This local score is determined given the characteristics we listed previously.</p>
+
+<p>Another thing we notice is that we often have duplicate nodes. We can store these duplicated in a cache and replace them when we need it. This saves an enourmous amount of time and space since a quarter of the nodes tend to be duplicates.</p>
+
+<p>So now we have a tree which expands based on expected score and a probability based threshold and also uses a cache. I used this logic and created a simple <a href="https://github.com/saquibhafiz/Solving-2048/tree/master/2048Solver">solver in Java</a> which communicates with a <a href="https://github.com/saquibhafiz/Solving-2048/tree/master/2048-server">2048 game</a> modified with node to use socket.io. My program successfully reaches 2048 98% of the time, 4096 66% of the time and 8192 36% of the time. This was calculated over a 50 games that I ran. I chose my probability threshold to be 0.005% after testing out some runtimes on my local machine to determine a good value. In fact <a href="https://github.com/saquibhafiz/Solving-2048">here it is</a> in action:</p>
+
+<p>(Youtube Video Link Coming Soon!)</p>
+
+</div>
+
+<div class="about">
+    <div class="about__devider">*****</div>
+    <div class="about__text">
+        Written by <strong>  Saquib Hafiz </strong>
+        on <strong>20 July 2016</strong>
+    </div>
+</div>
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = 'saquibhafiz';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+        </div>
+
+        <script src="/assets/vendor/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+        
+    </body>
+</html>
